@@ -3,7 +3,8 @@ module api_olshop
 go 1.14
 
 require (
-	github.com/gin-gonic/gin v1.6.3
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/gin-gonic/gin v1.6.3 // indirect
 	github.com/go-playground/validator/v10 v10.3.0 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/google/uuid v1.1.1 // indirect
