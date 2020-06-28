@@ -1,7 +1,13 @@
 package token
 
-// RepositoryResult as responds
-type RepositoryResult struct {
-	Result interface{}
-	Error  error
+// ResToken as responds token data
+type ResToken struct {
+	ID           uint   `json:id`
+	AppsID       uint   `json:apps_id`
+	CreatedAt    string `json:created_at`
+	ExpiredAt    string `json:expired_at`
+	TokenCode    string `json:token_code`
+	RefreshToken string `json:refresh_token`
+	DeviceID     uint   `json:device_id`
+	DeviceType   string `json:device_type`
 }
