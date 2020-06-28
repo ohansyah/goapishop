@@ -3,6 +3,7 @@ package routes
 import (
 	"api_olshop/internal/contact"
 	"api_olshop/middleware"
+	"api_olshop/token"
 	"fmt"
 	"log"
 	"net/http"
@@ -15,14 +16,7 @@ func HandleRequest() {
 	r := mux.NewRouter()
 
 	// token
-	// r.HandleFunc("/token/get", homePage).Methods("GET")
-
-	// product
-	// r.HandleFunc("/api/product", product.List).Methods("GET")
-	// r.HandleFunc("/api/product/get", product.Get).Methods("GET")
-	// r.HandleFunc("/api/product/create", product.Create).Methods("POST")
-	// r.HandleFunc("/api/product/update", product.Update).Methods("POST")
-	// r.HandleFunc("/api/product/delete", product.Delete).Methods("POST")
+	r.HandleFunc("/api/token/gnerate", token.Generate).Methods("POST")
 
 	// contact
 	r.HandleFunc("/api/contact/create", contact.Create).Methods("POST")

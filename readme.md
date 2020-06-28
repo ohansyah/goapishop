@@ -18,7 +18,7 @@ Middlewares are (typically) small pieces of code which take one request, do some
 what this middleware do :
 insert log api to db
 token checks
-asdsd
+
 => it comes to creating a production-grade application
 Layout : single project
 ENV : viper
@@ -29,6 +29,6 @@ pagination
 sorting
 dyanmic search
 degugging tools
-daemon tools
+daemon tools ??
 cron
 migration
