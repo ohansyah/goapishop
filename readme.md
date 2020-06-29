@@ -17,7 +17,7 @@ Middlewares are (typically) small pieces of code which take one request, do some
 
 what this middleware do :
 insert log api to db
-token checks
+token validation
 
 => it comes to creating a production-grade application
 Layout : single project
