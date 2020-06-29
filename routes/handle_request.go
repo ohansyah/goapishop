@@ -9,12 +9,12 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/spf13/viper"
 )
 
 // HandleRequest handling every request using mux
 func HandleRequest() {
 	r := mux.NewRouter()
-
 	r.Use(middleware.LoggingMiddleware)
 
 	// token
@@ -25,6 +25,6 @@ func HandleRequest() {
 	r.HandleFunc("/api/contact/create", contact.Create).Methods("POST")
 
 	http.Handle("/", r)
-	fmt.Println("Connected to port 8000")
-	log.Fatal(http.ListenAndServe(":8000", r))
+	fmt.Println("Connected to port " + viper.Get("port").(string))
+	log.Fatal(http.ListenAndServe(":"+viper.Get("port").(string), r))
 }
