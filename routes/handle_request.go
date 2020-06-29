@@ -15,14 +15,16 @@ import (
 func HandleRequest() {
 	r := mux.NewRouter()
 
+	r.Use(middleware.LoggingMiddleware)
+
 	// token
-	r.HandleFunc("/api/token/gnerate", token.Generate).Methods("POST")
+	r.HandleFunc("/api/token/generate", token.Generate).Methods("POST")
+	r.HandleFunc("/api/token/validate", token.Validate).Methods("POST")
 
 	// contact
 	r.HandleFunc("/api/contact/create", contact.Create).Methods("POST")
 
 	http.Handle("/", r)
-	r.Use(middleware.LoggingMiddleware)
 	fmt.Println("Connected to port 8000")
 	log.Fatal(http.ListenAndServe(":8000", r))
 }
