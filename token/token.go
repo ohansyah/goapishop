@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -57,7 +58,7 @@ func Generate(w http.ResponseWriter, r *http.Request) {
 // Validate and return boolean
 func Validate(w http.ResponseWriter, r *http.Request) {
 	var response dtos.Response
-	var tokenString = r.FormValue("token")
+	var tokenString = strings.Join(r.Header["Token"], ", ")
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -76,7 +77,6 @@ func Validate(w http.ResponseWriter, r *http.Request) {
 		response.Success = false
 		response.Message = err.Error()
 	}
-
 	ResSuccess(w, response)
 }
 
