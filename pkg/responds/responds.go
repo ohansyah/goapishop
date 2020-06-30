@@ -1,7 +1,7 @@
 package responds
 
 import (
-	"api_olshop/dtos"
+	"api_olshop/pkg/dtos"
 	"encoding/json"
 	"net/http"
 

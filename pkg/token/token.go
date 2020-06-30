@@ -1,8 +1,8 @@
 package token
 
 import (
-	"api_olshop/dtos"
-	res "api_olshop/responds"
+	"api_olshop/pkg/dtos"
+	res "api_olshop/pkg/responds"
 	"fmt"
 	"net/http"
 	"strconv"

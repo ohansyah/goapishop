@@ -3,7 +3,7 @@ package routes
 import (
 	"api_olshop/internal/contact"
 	"api_olshop/middleware"
-	"api_olshop/token"
+	"api_olshop/pkg/token"
 	"fmt"
 	"log"
 	"net/http"

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	token "api_olshop/token"
+	token "api_olshop/pkg/token"
 	"log"
 	"net/http"
 )
