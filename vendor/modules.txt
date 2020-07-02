@@ -72,7 +72,6 @@ google.golang.org/appengine/cloudsql
 ## explicit
 # gopkg.in/go-playground/validator.v8 v8.18.2
 ## explicit
-gopkg.in/go-playground/validator.v8
 # gopkg.in/ini.v1 v1.51.0
 gopkg.in/ini.v1
 # gopkg.in/yaml.v2 v2.3.0

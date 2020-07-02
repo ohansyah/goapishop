@@ -25,8 +25,15 @@ func main() {
 	// Database connection
 	db := database.ConnectToDB()
 
+	// Enable Logger, show detailed log
+	db.LogMode(true)
+
 	// migration
 	db.AutoMigrate(&models.Contact{})
+	db.AutoMigrate(&models.Apps{})
+	db.AutoMigrate(&models.Tokens{})
+	db.AutoMigrate(&models.TokenLogs{})
+	db.AutoMigrate(&models.TokenProfiles{})
 	defer db.Close()
 
 	// routing

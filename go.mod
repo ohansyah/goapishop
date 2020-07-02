@@ -16,6 +16,6 @@ require (
 	github.com/spf13/viper v1.7.0
 	golang.org/x/sys v0.0.0-20200602225109-6fdc65e7d980 // indirect
 	google.golang.org/protobuf v1.24.0 // indirect
-	gopkg.in/go-playground/validator.v8 v8.18.2
+	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 )
