@@ -1,7 +1,6 @@
 package token
 
 import (
-	"api_olshop/pkg/dtos"
 	res "api_olshop/pkg/responds"
 	"fmt"
 	"net/http"
@@ -35,7 +34,7 @@ func GenerateJWT() (string, error) {
 
 // Generate and return token
 func Generate(w http.ResponseWriter, r *http.Request) {
-	var response dtos.Response
+	var response res.Response
 	var data ResToken
 
 	id64, _ := strconv.ParseUint(r.FormValue("device_id"), 10, 64)
@@ -57,7 +56,7 @@ func Generate(w http.ResponseWriter, r *http.Request) {
 
 // Validate and return boolean
 func Validate(w http.ResponseWriter, r *http.Request) {
-	var response dtos.Response
+	var response res.Response
 	var tokenString = strings.Join(r.Header["Token"], ", ")
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
@@ -97,7 +96,7 @@ func ValidateToken(w http.ResponseWriter, r *http.Request, next http.Handler) {
 		}
 	}
 
-	var response dtos.Response
+	var response res.Response
 	tokenHeader := r.Header.Get("Token") //Grab the token from the header
 	if tokenHeader == "" {               //Token is missing, returns with error code 403 Unauthorized
 		response.Success = false

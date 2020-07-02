@@ -1,7 +1,6 @@
 package responds
 
 import (
-	"api_olshop/pkg/dtos"
 	"encoding/json"
 	"net/http"
 
@@ -9,7 +8,7 @@ import (
 )
 
 // ResSuccess return data
-func ResSuccess(w http.ResponseWriter, data dtos.Response) {
+func ResSuccess(w http.ResponseWriter, data Response) {
 	data.APIVersion = viper.Get("api_version").(string)
 	data.Code = 200
 	w.Header().Set("Content-Type", "application/json")
@@ -18,7 +17,7 @@ func ResSuccess(w http.ResponseWriter, data dtos.Response) {
 }
 
 // ResErr return data
-func ResErr(w http.ResponseWriter, data dtos.Response, code int) {
+func ResErr(w http.ResponseWriter, data Response, code int) {
 	data.APIVersion = viper.Get("api_version").(string)
 	data.Code = code
 	w.Header().Set("Content-Type", "application/json")
