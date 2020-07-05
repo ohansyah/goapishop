@@ -12,9 +12,10 @@ type MiddlewareFunc func(http.Handler) http.Handler
 // LoggingMiddleware loging and validate token
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Println(r.RequestURI)
 
 		// insert log request api to db
+		log.Println(r.RequestURI)
+
 		// insert res success request api to db
 		// insert res failed request api to db
 

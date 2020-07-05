@@ -2,6 +2,7 @@ package token
 
 import (
 	res "api_olshop/pkg/responds"
+	"api_olshop/queries"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -13,7 +14,7 @@ import (
 )
 
 // GenerateJWT token
-func GenerateJWT() (string, error) {
+func GenerateJWT(appsSecretKey string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 
@@ -22,7 +23,7 @@ func GenerateJWT() (string, error) {
 	// claims["exp"] = time.Now().Add(time.Hour * 24 * 3).Unix()
 	claims["exp"] = time.Now().Add(time.Second * 30).Unix()
 
-	var mySigningKey = []byte(viper.Get("api_key").(string))
+	var mySigningKey = []byte(appsSecretKey)
 	tokenString, err := token.SignedString(mySigningKey)
 
 	if err != nil {
@@ -41,15 +42,26 @@ func Generate(w http.ResponseWriter, r *http.Request) {
 	data.DeviceID = uint(id64)
 	data.DeviceType = r.FormValue("device_type")
 
-	tokenString, err := GenerateJWT()
+	// validate apps name and secret key
+	var appsName = r.FormValue("name")
+	var appsSecretKey = r.FormValue("secret_key")
+
+	if queries.ValidateTokenApp(appsName, appsSecretKey) == false {
+		response.Success = false
+		response.Message = "Apps token invalid"
+		res.ResErr(w, response, http.StatusBadRequest)
+		return
+	}
+
+	tokenString, err := GenerateJWT(appsSecretKey)
 	if err != nil {
 		response.Success = false
 		response.Message = "Error generating token string"
-	} else {
-		data.TokenCode = tokenString
-		response.Success = true
+		res.ResErr(w, response, http.StatusBadRequest)
+		return
 	}
-
+	data.TokenCode = tokenString
+	response.Success = true
 	response.Data = data
 	res.ResSuccess(w, response)
 }
@@ -78,6 +90,7 @@ func Validate(w http.ResponseWriter, r *http.Request) {
 		response.Success = false
 		response.Message = err.Error()
 		res.ResErr(w, response, http.StatusBadRequest)
+		return
 	}
 
 }
