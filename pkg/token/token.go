@@ -47,7 +47,6 @@ func Generate(w http.ResponseWriter, r *http.Request) {
 	var appsSecretKey = r.FormValue("secret_key")
 	GetTokenApp := queries.GetTokenApp(appsName, appsSecretKey)
 	if result := GetTokenApp; result.Error != nil {
-		response.Success = false
 		response.Message = "Apps token invalid"
 		res.ResErr(w, response, http.StatusBadRequest)
 		return
@@ -55,7 +54,6 @@ func Generate(w http.ResponseWriter, r *http.Request) {
 
 	tokenString, err := GenerateJWT(appsSecretKey)
 	if err != nil {
-		response.Success = false
 		response.Message = "Error generating token string"
 		res.ResErr(w, response, http.StatusBadRequest)
 		return
@@ -87,7 +85,6 @@ func Validate(w http.ResponseWriter, r *http.Request) {
 		res.ResSuccess(w, response)
 
 	} else {
-		response.Success = false
 		response.Message = err.Error()
 		res.ResErr(w, response, http.StatusBadRequest)
 		return
@@ -112,7 +109,6 @@ func ValidateToken(w http.ResponseWriter, r *http.Request, next http.Handler) {
 	var response res.Response
 	tokenHeader := r.Header.Get("Token") //Grab the token from the header
 	if tokenHeader == "" {               //Token is missing, returns with error code 403 Unauthorized
-		response.Success = false
 		response.Message = "Missing auth token"
 
 		res.ResErr(w, response, http.StatusForbidden)
@@ -132,7 +128,6 @@ func ValidateToken(w http.ResponseWriter, r *http.Request, next http.Handler) {
 	if _, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		next.ServeHTTP(w, r)
 	} else {
-		response.Success = false
 		response.Message = err.Error()
 		res.ResErr(w, response, http.StatusForbidden)
 		return
