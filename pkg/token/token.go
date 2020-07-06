@@ -14,14 +14,13 @@ import (
 )
 
 // GenerateJWT token
-func GenerateJWT(appsSecretKey string) (string, error) {
+func GenerateJWT(appsSecretKey string, appsName string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 
 	claims["authorizes"] = true
-	claims["user"] = "ohan"
-	// claims["exp"] = time.Now().Add(time.Hour * 24 * 3).Unix()
-	claims["exp"] = time.Now().Add(time.Second * 30).Unix()
+	claims["appsName"] = appsName
+	claims["exp"] = time.Now().Add(time.Hour * 24 * 3).Unix()
 
 	var mySigningKey = []byte(appsSecretKey)
 	tokenString, err := token.SignedString(mySigningKey)
@@ -46,13 +45,13 @@ func Generate(w http.ResponseWriter, r *http.Request) {
 	var appsName = r.FormValue("name")
 	var appsSecretKey = r.FormValue("secret_key")
 	GetTokenApp := queries.GetTokenApp(appsName, appsSecretKey)
-	if result := GetTokenApp; result.Error != nil {
-		response.Message = "Apps token invalid"
+	if GetTokenApp.ID == 0 {
+		response.Message = "Apps Name invalid"
 		res.ResErr(w, response, http.StatusBadRequest)
 		return
 	}
 
-	tokenString, err := GenerateJWT(appsSecretKey)
+	tokenString, err := GenerateJWT(appsSecretKey, appsName)
 	if err != nil {
 		response.Message = "Error generating token string"
 		res.ResErr(w, response, http.StatusBadRequest)
