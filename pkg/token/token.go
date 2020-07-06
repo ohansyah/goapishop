@@ -45,8 +45,8 @@ func Generate(w http.ResponseWriter, r *http.Request) {
 	// validate apps name and secret key
 	var appsName = r.FormValue("name")
 	var appsSecretKey = r.FormValue("secret_key")
-
-	if queries.ValidateTokenApp(appsName, appsSecretKey) == false {
+	GetTokenApp := queries.GetTokenApp(appsName, appsSecretKey)
+	if result := GetTokenApp; result.Error != nil {
 		response.Success = false
 		response.Message = "Apps token invalid"
 		res.ResErr(w, response, http.StatusBadRequest)
