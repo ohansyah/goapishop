@@ -14,12 +14,13 @@ import (
 )
 
 // GenerateJWT token
-func GenerateJWT(appsSecretKey string, appsName string) (string, error) {
+func GenerateJWT(appsSecretKey string, appsName string, appsID uint) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 
 	claims["authorizes"] = true
 	claims["appsName"] = appsName
+	claims["appsID"] = appsID
 	claims["exp"] = time.Now().Add(time.Hour * 24 * 3).Unix()
 
 	var mySigningKey = []byte(appsSecretKey)
@@ -51,7 +52,7 @@ func Generate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokenString, err := GenerateJWT(appsSecretKey, appsName)
+	tokenString, err := GenerateJWT(appsSecretKey, appsName, GetTokenApp.ID)
 	if err != nil {
 		response.Message = "Error generating token string"
 		res.ResErr(w, response, http.StatusBadRequest)
