@@ -43,11 +43,11 @@ based on my mind and https://github.com/golang-standards/project-layout
 ========================
     Getting started
 ========================
-1. init project folder
+1. INIT project folder
 go mod init
 go mod vendor // after import package
 
-2. environment
+2. ENVIRONMENT
 When it comes to creating a production-grade application, using the environment variable in the application is de facto. https://schadokar.dev/posts/go-env-ways/
 
 Switch environment development at .env
@@ -57,16 +57,19 @@ Configure your each environment in ./configs/*.env
 
 This project environment setting using viper. https://github.com/spf13/viper
 
-3. middleware & Router
-Middlewares are (typically) small pieces of code which take one request, do something with it, and pass it down to another middleware or the final handler. Some common use cases for middleware are request logging, header manipulation, or ResponseWriter hijacking. https://github.com/gorilla/mux.
+3. ROUTING
+this project using gorilla/mux for routing. https://github.com/gorilla/mux
+implements as package routes/handle_request.json
+
+4. MIDDLEWARE
+Middlewares are (typically) small pieces of code which take one request, do something with it, and pass it down to another middleware or the final handler. Some common use cases for middleware are request logging, header manipulation, or ResponseWriter hijacking.
 
 what this middleware do :
-    Xinsert log api to db
     token validation
 
-4. Log API and Queries
-    X API - save log every api request and responds to tb token_log
-    X Database - print log database
+5. Log API and Queries
+    API - save log every api request and responds to tb token_log (responds.ResSuccess && responds.ResErr)
+    Database - print log database => main.go db.LogMode(true)
 ========================================================================
     => this comes to creating a production-grade application
 ========================================================================
