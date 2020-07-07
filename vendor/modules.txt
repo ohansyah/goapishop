@@ -1,6 +1,8 @@
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
 ## explicit
 github.com/dgrijalva/jwt-go
+# github.com/dvsekhvalnov/jose2go v0.0.0-20180829124132-7f401d37b68a
+## explicit
 # github.com/fsnotify/fsnotify v1.4.7
 github.com/fsnotify/fsnotify
 # github.com/go-sql-driver/mysql v1.4.1

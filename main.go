@@ -30,7 +30,6 @@ func main() {
 
 	// migration
 	db.AutoMigrate(&models.Contact{})
-	db.AutoMigrate(&models.Apps{})
 	db.AutoMigrate(&models.Tokens{})
 	db.AutoMigrate(&models.TokenLogs{})
 	db.AutoMigrate(&models.TokenProfiles{})

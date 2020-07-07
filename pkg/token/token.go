@@ -5,7 +5,6 @@ import (
 	"api_olshop/queries"
 	"fmt"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 
@@ -14,16 +13,14 @@ import (
 )
 
 // GenerateJWT token
-func GenerateJWT(appsSecretKey string, appsName string, appsID uint) (string, error) {
+func GenerateJWT(exptime time.Time) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 
 	claims["authorizes"] = true
-	claims["appsName"] = appsName
-	claims["appsID"] = appsID
-	claims["exp"] = time.Now().Add(time.Hour * 24 * 3).Unix()
+	claims["exp"] = exptime.Unix()
 
-	var mySigningKey = []byte(appsSecretKey)
+	var mySigningKey = []byte(viper.Get("api_key").(string))
 	tokenString, err := token.SignedString(mySigningKey)
 
 	if err != nil {
@@ -37,28 +34,38 @@ func GenerateJWT(appsSecretKey string, appsName string, appsID uint) (string, er
 func Generate(w http.ResponseWriter, r *http.Request) {
 	var response res.Response
 	var data ResToken
-
-	id64, _ := strconv.ParseUint(r.FormValue("device_id"), 10, 64)
-	data.DeviceID = uint(id64)
+	exptime := time.Now().Add(time.Hour * 24)
+	data.DeviceID = r.FormValue("device_id")
 	data.DeviceType = r.FormValue("device_type")
 
 	// validate apps name and secret key
-	var appsName = r.FormValue("name")
-	var appsSecretKey = r.FormValue("secret_key")
-	GetTokenApp := queries.GetTokenApp(appsName, appsSecretKey)
-	if GetTokenApp.ID == 0 {
-		response.Message = "Apps Name invalid"
+	if r.FormValue("secret_key") != viper.Get("secret_key") {
+		response.Message = "secret_key invalid"
 		res.ResErr(w, response, http.StatusBadRequest)
 		return
 	}
 
-	tokenString, err := GenerateJWT(appsSecretKey, appsName, GetTokenApp.ID)
+	tokenString, err := GenerateJWT(exptime)
+	tokenRefresh, err := GenerateJWT(time.Now().Add(time.Hour * 24 * 30))
 	if err != nil {
 		response.Message = "Error generating token string"
 		res.ResErr(w, response, http.StatusBadRequest)
 		return
 	}
+
+	// check if device has token
+	deviceToken := queries.GetTokenByDevID(data.DeviceID)
+	if deviceToken.ID > 0 {
+		// update if has
+		queries.UpdateToken(deviceToken.ID, tokenString, tokenRefresh, exptime)
+
+	} else {
+		// create if not
+		queries.CreateToken(data.DeviceID, data.DeviceType, tokenString, tokenRefresh, exptime)
+	}
+
 	data.TokenCode = tokenString
+	data.RefreshToken = tokenRefresh
 	response.Success = true
 	response.Data = data
 	res.ResSuccess(w, response)
@@ -68,6 +75,7 @@ func Generate(w http.ResponseWriter, r *http.Request) {
 func Validate(w http.ResponseWriter, r *http.Request) {
 	var response res.Response
 	var tokenString = strings.Join(r.Header["Token"], ", ")
+
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -78,8 +86,7 @@ func Validate(w http.ResponseWriter, r *http.Request) {
 		return []byte(viper.Get("api_key").(string)), nil
 	})
 
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		fmt.Println(claims)
+	if _, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		response.Success = true
 		response.Message = "true"
 		res.ResSuccess(w, response)
