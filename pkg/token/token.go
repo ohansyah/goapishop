@@ -41,7 +41,7 @@ func Generate(w http.ResponseWriter, r *http.Request) {
 	// validate apps name and secret key
 	if r.FormValue("secret_key") != viper.Get("secret_key") {
 		response.Message = "secret_key invalid"
-		res.ResErr(w, response, http.StatusBadRequest)
+		res.ResErr(w, r, response, http.StatusBadRequest)
 		return
 	}
 
@@ -49,7 +49,7 @@ func Generate(w http.ResponseWriter, r *http.Request) {
 	tokenRefresh, err := GenerateJWT(time.Now().Add(time.Hour * 24 * 30))
 	if err != nil {
 		response.Message = "Error generating token string"
-		res.ResErr(w, response, http.StatusBadRequest)
+		res.ResErr(w, r, response, http.StatusBadRequest)
 		return
 	}
 
@@ -68,7 +68,12 @@ func Generate(w http.ResponseWriter, r *http.Request) {
 	data.RefreshToken = tokenRefresh
 	response.Success = true
 	response.Data = data
-	res.ResSuccess(w, response)
+
+	// set header
+	r.Header.Set("Token", tokenString)
+	r.Header.Set("RefreshToken", tokenRefresh)
+
+	res.ResSuccess(w, r, response)
 }
 
 // Validate and return boolean
@@ -89,14 +94,13 @@ func Validate(w http.ResponseWriter, r *http.Request) {
 	if _, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		response.Success = true
 		response.Message = "true"
-		res.ResSuccess(w, response)
+		res.ResSuccess(w, r, response)
 
 	} else {
 		response.Message = err.Error()
-		res.ResErr(w, response, http.StatusForbidden)
+		res.ResErr(w, r, response, http.StatusForbidden)
 		return
 	}
-
 }
 
 // ValidateToken return data
@@ -118,7 +122,7 @@ func ValidateToken(w http.ResponseWriter, r *http.Request, next http.Handler) {
 	if tokenHeader == "" {               //Token is missing, returns with error code 403 Unauthorized
 		response.Message = "Missing auth token"
 
-		res.ResErr(w, response, http.StatusForbidden)
+		res.ResErr(w, r, response, http.StatusForbidden)
 		return
 	}
 
@@ -136,7 +140,7 @@ func ValidateToken(w http.ResponseWriter, r *http.Request, next http.Handler) {
 		next.ServeHTTP(w, r)
 	} else {
 		response.Message = err.Error()
-		res.ResErr(w, response, http.StatusForbidden)
+		res.ResErr(w, r, response, http.StatusForbidden)
 		return
 	}
 }

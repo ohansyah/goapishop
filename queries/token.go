@@ -31,3 +31,17 @@ func UpdateToken(ID uint, tokenCode string, refreshToken string, expiredDate tim
 	result := db.Model(token).Where("id = ?", ID).Updates(&models.Token{TokenCode: tokenCode, RefreshToken: refreshToken, ExpiredDate: expiredDate})
 	return result
 }
+
+// CreateTokenLog data
+func CreateTokenLog(data models.TokenLog) {
+	db := database.ConnectToDB()
+	db.Create(&data)
+}
+
+// GetTokenData get token by token string
+func GetTokenData(tokenCode string) models.Token {
+	var token models.Token
+	db := database.ConnectToDB()
+	db.Where("token_code = ?", tokenCode).Find(&token)
+	return token
+}
