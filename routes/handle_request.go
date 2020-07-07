@@ -20,6 +20,7 @@ func HandleRequest() {
 	// token
 	r.HandleFunc("/api/token/generate", token.Generate).Methods("POST")
 	r.HandleFunc("/api/token/validate", token.Validate).Methods("POST")
+	r.HandleFunc("/api/token/refresh", token.Refresh).Methods("POST")
 
 	// contact
 	r.HandleFunc("/api/contact/create", contact.Create).Methods("POST")

@@ -106,8 +106,8 @@ func Validate(w http.ResponseWriter, r *http.Request) {
 // ValidateToken return data
 func ValidateToken(w http.ResponseWriter, r *http.Request, next http.Handler) {
 	// token checks
-	notAuth := []string{"/api/token/generate"} //List of endpoints that doesn't require auth
-	requestPath := r.URL.Path                  //current request path
+	notAuth := []string{"/api/token/generate", "/api/token/refresh"} //List of endpoints that doesn't require auth
+	requestPath := r.URL.Path                                        //current request path
 	//check if request does not need authentication, serve the request if it doesn't need it
 	for _, value := range notAuth {
 
@@ -138,6 +138,59 @@ func ValidateToken(w http.ResponseWriter, r *http.Request, next http.Handler) {
 
 	if _, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		next.ServeHTTP(w, r)
+	} else {
+		response.Message = err.Error()
+		res.ResErr(w, r, response, http.StatusForbidden)
+		return
+	}
+}
+
+// Refresh expired token data
+func Refresh(w http.ResponseWriter, r *http.Request) {
+	var response res.Response
+	var data ResToken
+	var tokenCode = r.FormValue("Token")
+	var refreshToken = r.FormValue("RefreshToken")
+	exptime := time.Now().Add(time.Hour * 24)
+
+	// validate correct token
+	var tokendata = queries.GetTokenData(tokenCode)
+	if tokendata.ID < 0 {
+		response.Message = "Token Code Invalid"
+		res.ResErr(w, r, response, http.StatusBadRequest)
+		return
+	}
+
+	// validate refresh token
+	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return []byte(viper.Get("api_key").(string)), nil
+	})
+
+	if _, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// generate new token and refresh token
+		tokenString, _ := GenerateJWT(exptime)
+		tokenRefresh, _ := GenerateJWT(time.Now().Add(time.Hour * 24 * 30))
+
+		// update saved token
+		queries.UpdateToken(tokendata.ID, tokenString, tokenRefresh, exptime)
+
+		data.TokenCode = tokenString
+		data.RefreshToken = tokenRefresh
+		response.Success = true
+		response.Data = data
+
+		// set header
+		r.Header.Set("Token", tokenString)
+		r.Header.Set("RefreshToken", tokenRefresh)
+
+		res.ResSuccess(w, r, response)
+
 	} else {
 		response.Message = err.Error()
 		res.ResErr(w, r, response, http.StatusForbidden)
