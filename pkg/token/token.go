@@ -93,7 +93,7 @@ func Validate(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 		response.Message = err.Error()
-		res.ResErr(w, response, http.StatusBadRequest)
+		res.ResErr(w, response, http.StatusForbidden)
 		return
 	}
 
