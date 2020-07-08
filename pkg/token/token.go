@@ -98,7 +98,12 @@ func Validate(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 		response.Message = err.Error()
-		res.ResErr(w, r, response, http.StatusForbidden)
+		fmt.Println(err)
+		if response.Message == "Token is expired" {
+			res.ResErr(w, r, response, http.StatusNotAcceptable)
+		} else {
+			res.ResErr(w, r, response, http.StatusPaymentRequired)
+		}
 		return
 	}
 }
@@ -121,8 +126,7 @@ func ValidateToken(w http.ResponseWriter, r *http.Request, next http.Handler) {
 	tokenHeader := r.Header.Get("Token") //Grab the token from the header
 	if tokenHeader == "" {               //Token is missing, returns with error code 403 Unauthorized
 		response.Message = "Missing auth token"
-
-		res.ResErr(w, r, response, http.StatusForbidden)
+		res.ResErr(w, r, response, http.StatusPaymentRequired)
 		return
 	}
 
@@ -140,7 +144,11 @@ func ValidateToken(w http.ResponseWriter, r *http.Request, next http.Handler) {
 		next.ServeHTTP(w, r)
 	} else {
 		response.Message = err.Error()
-		res.ResErr(w, r, response, http.StatusForbidden)
+		if response.Message == "Token is expired" {
+			res.ResErr(w, r, response, http.StatusNotAcceptable)
+		} else {
+			res.ResErr(w, r, response, http.StatusPaymentRequired)
+		}
 		return
 	}
 }
@@ -193,7 +201,7 @@ func Refresh(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 		response.Message = err.Error()
-		res.ResErr(w, r, response, http.StatusForbidden)
+		res.ResErr(w, r, response, http.StatusPaymentRequired)
 		return
 	}
 }

@@ -63,21 +63,29 @@ implements as package routes/handle_request.json
 
 4. MIDDLEWARE
 Middlewares are (typically) small pieces of code which take one request, do something with it, and pass it down to another middleware or the final handler. Some common use cases for middleware are request logging, header manipulation, or ResponseWriter hijacking.
-
 what this middleware do :
-    token validation
++ token validation
 
 5. Log API and Queries
-    API - save log every api request and responds to tb token_log (responds.ResSuccess && responds.ResErr)
-    Database - print log database => main.go db.LogMode(true)
-========================================================================
-    => this comes to creating a production-grade application
-========================================================================
-Layout : single project
-ENV : viper
-ORM : GORM
-Router : MUX
++ API - save log every api request and responds to tb token_log (responds.ResSuccess && responds.ResErr)
++ Database - print log database => main.go db.LogMode(true)
 
+6. Token
+this project using dgrijalva/jwt-go. https://github.com/dgrijalva/jwt-go
+implements as package pkg/token/.there are 3 method :
++ generate
++ validate
++ refresh
+for handling token, need to reserved 2 code
++ 402 - StatusPaymentRequired
+    token invalid -> generate new token
++ 406 - StatusNotAcceptable
+    token expired -> refresh token
+
+
+========================================================================
+    => this project layout comes to creating a production-grade application
+========================================================================
 pagination
 sorting
 dyanmic search
