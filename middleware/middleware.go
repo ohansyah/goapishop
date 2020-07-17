@@ -14,8 +14,10 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		// log request
-		log.Println(r.RequestURI)
-
+		log.Println(
+			r.Method,
+			r.URL.EscapedPath(),
+		)
 		// token checks
 		token.ValidateToken(w, r, next)
 	})
