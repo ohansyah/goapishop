@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/spf13/viper"
 )
@@ -51,8 +50,6 @@ func CreateTokenLog(r *http.Request, data Response, Status string) {
 		Response:   string(jsonData),
 		Status:     Status,
 		APIVersion: data.APIVersion,
-		StartDate:  time.Now(),
-		EndDate:    time.Now(),
 	}
 	queries.CreateTokenLog(tokenlog)
 }
