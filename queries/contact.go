@@ -2,8 +2,8 @@ package queries
 
 import (
 	"api_olshop/database"
-	"api_olshop/dtos"
 	"api_olshop/models"
+	"api_olshop/pkg/dtos"
 )
 
 // CreateContact to databse

@@ -3,32 +3,29 @@ package routes
 import (
 	"api_olshop/internal/contact"
 	"api_olshop/middleware"
+	"api_olshop/pkg/token"
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/spf13/viper"
 )
 
 // HandleRequest handling every request using mux
 func HandleRequest() {
 	r := mux.NewRouter()
+	r.Use(middleware.LoggingMiddleware)
 
 	// token
-	// r.HandleFunc("/token/get", homePage).Methods("GET")
-
-	// product
-	// r.HandleFunc("/api/product", product.List).Methods("GET")
-	// r.HandleFunc("/api/product/get", product.Get).Methods("GET")
-	// r.HandleFunc("/api/product/create", product.Create).Methods("POST")
-	// r.HandleFunc("/api/product/update", product.Update).Methods("POST")
-	// r.HandleFunc("/api/product/delete", product.Delete).Methods("POST")
+	r.HandleFunc("/api/token/generate", token.Generate).Methods("POST")
+	r.HandleFunc("/api/token/validate", token.Validate).Methods("POST")
+	r.HandleFunc("/api/token/refresh", token.Refresh).Methods("POST")
 
 	// contact
 	r.HandleFunc("/api/contact/create", contact.Create).Methods("POST")
 
 	http.Handle("/", r)
-	r.Use(middleware.LoggingMiddleware)
-	fmt.Println("Connected to port 8000")
-	log.Fatal(http.ListenAndServe(":8000", r))
+	fmt.Println("Connected to port " + viper.Get("port").(string))
+	log.Fatal(http.ListenAndServe(":"+viper.Get("port").(string), r))
 }

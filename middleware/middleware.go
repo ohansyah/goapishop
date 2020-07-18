@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	token "api_olshop/pkg/token"
 	"log"
 	"net/http"
 )
@@ -8,16 +9,16 @@ import (
 // MiddlewareFunc standart mux
 type MiddlewareFunc func(http.Handler) http.Handler
 
-// LoggingMiddleware console.log
+// LoggingMiddleware loging and validate token
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Println(r.RequestURI)
 
-		// insert log request api to db
-		// insert res success request api to db
-		// insert res failed request api to db
+		// log request
+		log.Println(
+			r.Method,
+			r.URL.EscapedPath(),
+		)
 		// token checks
-
-		next.ServeHTTP(w, r)
+		token.ValidateToken(w, r, next)
 	})
 }
