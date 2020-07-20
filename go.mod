@@ -11,6 +11,7 @@ require (
 	github.com/jinzhu/gorm v1.9.12
 	github.com/spf13/viper v1.7.0
 	github.com/stretchr/testify v1.4.0 // indirect
+	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899
 	golang.org/x/sys v0.0.0-20200602225109-6fdc65e7d980 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/yaml.v2 v2.3.0 // indirect
