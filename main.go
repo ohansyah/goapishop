@@ -33,6 +33,8 @@ func main() {
 	db.AutoMigrate(&models.Tokens{})
 	db.AutoMigrate(&models.TokenLogs{})
 	db.AutoMigrate(&models.TokenProfiles{})
+	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.Role{})
 	defer db.Close()
 
 	// routing
