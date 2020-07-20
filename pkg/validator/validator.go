@@ -2,6 +2,7 @@ package validator
 
 import (
 	"log"
+	"regexp"
 
 	"github.com/go-playground/locales/en"
 	ut "github.com/go-playground/universal-translator"
@@ -47,5 +48,26 @@ func Validate(register input) string {
 	}
 	return messages
 }
+
+// ValidatePassword and retype password
+func ValidatePassword(pass string, retype string) string {
+	var messages = ""
+	if len(pass) < 6 {
+		messages += "Password minimum 6 character."
+	}
+
+	if pass != retype {
+		messages += "Password does not match."
+	}
+
+	if IsAlphNum(pass) == false {
+		messages += "Password must contains Alphabet and Numeric."
+	}
+
+	return messages
+}
+
+// IsAlphNum regex a-z A-Z 0-1
+var IsAlphNum = regexp.MustCompile(`[a-zA-Z][0-9]+|[0-9][a-zA-Z]+`).MatchString
 
 type input interface{}

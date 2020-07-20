@@ -37,11 +37,27 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// validate password
+	validatePassword := validator.ValidatePassword(r.FormValue("password"), r.FormValue("retype_password"))
+	if validatePassword != "" {
+		response.Message = validatePassword
+		res.ResErr(w, r, response, http.StatusBadRequest)
+		return
+	}
 
 	// validate duplicate email and phone
+	checkRegister := queries.GetUserByEmailPhone(register.Email, register.Phone)
+	if checkRegister.ID > 0 {
+		response.Message = "Email or Phone Number exist"
+		res.ResErr(w, r, response, http.StatusBadRequest)
+		return
+	}
+
+	// bycript password
+	pwd := []byte(r.FormValue("password"))
+	register.Password = HashAndSalt(pwd)
 
 	// insert register
-	user := queries.Register(register.Name, register.Address, register.RoleID, register.Phone, register.Email)
+	user := queries.Register(register.Name, register.Address, register.RoleID, register.Phone, register.Email, register.Password)
 	if user.ID == 0 {
 		response.Message = "Registration Failed!"
 		res.ResErr(w, r, response, http.StatusBadRequest)
@@ -49,6 +65,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.Success = true
-	response.Data = "Success"
+	response.Data = user
 	res.ResSuccess(w, r, response)
 }
