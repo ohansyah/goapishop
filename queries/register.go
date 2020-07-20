@@ -3,7 +3,6 @@ package queries
 import (
 	"api_olshop/database"
 	"api_olshop/models"
-	"fmt"
 )
 
 // GetRoles get token by token string
@@ -19,8 +18,5 @@ func Register(Name string, Address string, RoleID string, Phone string, Email st
 	db := database.ConnectToDB()
 	var result = &models.User{Name: Name, Address: Address, RoleID: RoleID, Phone: Phone, Email: Email, Status: "1"}
 	db.Create(&result)
-	fmt.Println(result)
-	fmt.Println(&result)
-	fmt.Println(*result)
 	return *result
 }
