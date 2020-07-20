@@ -1,6 +1,4 @@
-========================
-    PROJECT LAYOUT
-========================
+PROJECT LAYOUT
 based on my mind and https://github.com/golang-standards/project-layout
 + configs
     Configuration default configs.
@@ -40,21 +38,16 @@ based on my mind and https://github.com/golang-standards/project-layout
     Note that you might need to add the -mod=vendor flag to your go build command if you are not using Go 1.14 where it's on by default.
     Don't commit your application dependencies if you are building a library.
 
-========================
-    Getting started
-========================
+Getting started
 1. INIT project folder
 go mod init
 go mod vendor // after import package
 
 2. ENVIRONMENT
 When it comes to creating a production-grade application, using the environment variable in the application is de facto. https://schadokar.dev/posts/go-env-ways/
-
 Switch environment development at .env
 DEVELOPMENT_TYPE = "local" || "develop" || "production"
-
 Configure your each environment in ./configs/*.env
-
 This project environment setting using viper. https://github.com/spf13/viper
 
 3. ROUTING
@@ -83,13 +76,5 @@ for handling token, need to reserved 2 code
     token expired -> refresh token
 
 
-========================================================================
-    => this project layout comes to creating a production-grade application
-========================================================================
-pagination
-sorting
-dyanmic search
-degugging tools
-daemon tools ??
-cron
-migration
+=> this project layout comes to creating a production-grade framework
+https://www.buymeacoffee.com/0hans
