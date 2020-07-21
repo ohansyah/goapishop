@@ -2,8 +2,8 @@ package routes
 
 import (
 	// "api_olshop/internal/contact"
+	"api_olshop/internal/register"
 	"api_olshop/middleware"
-	"api_olshop/pkg/register"
 	"api_olshop/pkg/token"
 	"fmt"
 	"log"
@@ -22,9 +22,6 @@ func HandleRequest() {
 	r.HandleFunc("/api/token/generate", token.Generate).Methods("POST")
 	r.HandleFunc("/api/token/validate", token.Validate).Methods("POST")
 	r.HandleFunc("/api/token/refresh", token.Refresh).Methods("POST")
-
-	// contact
-	// r.HandleFunc("/api/contact/create", contact.Create).Methods("POST")
 
 	// register
 	r.HandleFunc("/api/roles", register.GetRoles).Methods("GET")
