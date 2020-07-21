@@ -1,10 +1,13 @@
 package user
 
 import (
+	"api_olshop/models"
 	res "api_olshop/pkg/responds"
 	validator "api_olshop/pkg/validator"
 	"api_olshop/queries"
 	"net/http"
+	"strings"
+	"time"
 )
 
 // Login user
@@ -40,7 +43,30 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// insert token profile
+	// validate token
+	var tokenString = strings.Join(r.Header["Token"], ", ")
+	var tokenData = queries.GetTokenData(tokenString)
+	if tokenData.ID == 0 {
+		// failed login
+		response.Message = "Login failed, pleace contact customer services"
+		res.ResErr(w, r, response, http.StatusBadRequest)
+		return
+	}
+
+	// validate token profiles
+	var tokenProfiles = queries.GetTokenProfile(tokenData.ID)
+	if tokenProfiles.ID == 0 {
+		// create token profile
+		tokenProfileData := models.TokenProfile{
+			TokenID:      tokenData.ID,
+			UserID:       user.ID,
+			LastActivity: time.Now(),
+		}
+		queries.CreateTokenProfile(tokenProfileData)
+	} else {
+		// update token profile
+		queries.UpdateTokenProfile(tokenProfiles.ID, tokenData.ID, user.ID)
+	}
 
 	response.Success = true
 	response.Data = user

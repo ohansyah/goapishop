@@ -45,3 +45,25 @@ func GetTokenData(tokenCode string) models.Token {
 	db.Where("token_code = ?", tokenCode).Find(&token)
 	return token
 }
+
+// GetTokenProfile get token profiles by token id
+func GetTokenProfile(ID uint) models.TokenProfile {
+	var tokenProfile models.TokenProfile
+	db := database.ConnectToDB()
+	db.Where("token_id = ?", ID).Find(&tokenProfile)
+	return tokenProfile
+}
+
+// UpdateTokenProfile data
+func UpdateTokenProfile(ID uint, tokenID uint, userID uint) *gorm.DB {
+	db := database.ConnectToDB()
+	var tokenProfile models.TokenProfile
+	result := db.Model(tokenProfile).Where("id = ?", ID).Updates(&models.TokenProfile{TokenID: tokenID, UserID: userID, LastActivity: time.Now()})
+	return result
+}
+
+// CreateTokenProfile data
+func CreateTokenProfile(data models.TokenProfile) {
+	db := database.ConnectToDB()
+	db.Create(&data)
+}
