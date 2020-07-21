@@ -27,6 +27,9 @@ func HandleRequest() {
 	r.HandleFunc("/api/roles", user.GetRoles).Methods("GET")
 	r.HandleFunc("/api/register", user.Register).Methods("POST")
 
+	// user
+	r.HandleFunc("/api/user/login", user.Login).Methods("POST")
+
 	http.Handle("/", r)
 	fmt.Println("Connected to port " + viper.Get("port").(string))
 	log.Fatal(http.ListenAndServe(":"+viper.Get("port").(string), r))
