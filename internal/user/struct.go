@@ -1,4 +1,4 @@
-package register
+package user
 
 // FormRegis as form data register
 type FormRegis struct {

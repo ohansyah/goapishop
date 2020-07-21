@@ -1,4 +1,4 @@
-package register
+package user
 
 import (
 	"fmt"
