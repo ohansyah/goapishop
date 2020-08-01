@@ -58,7 +58,7 @@ func GetTokenProfile(ID uint) models.TokenProfile {
 func UpdateTokenProfile(ID uint, tokenID uint, userID uint) *gorm.DB {
 	db := database.ConnectToDB()
 	var tokenProfile models.TokenProfile
-	result := db.Model(tokenProfile).Where("id = ?", ID).Updates(&models.TokenProfile{TokenID: tokenID, UserID: userID, LastActivity: time.Now()})
+	result := db.Model(&tokenProfile).Where("id = ?", ID).Updates(map[string]interface{}{"token_id": tokenID, "user_id": userID})
 	return result
 }
 
