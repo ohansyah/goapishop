@@ -1,4 +1,4 @@
-package register
+package user
 
 import (
 	"fmt"
@@ -20,7 +20,6 @@ func ComparePasswords(hashedPwd string, plainPwd []byte) bool {
 	byteHash := []byte(hashedPwd)
 	err := bcrypt.CompareHashAndPassword(byteHash, plainPwd)
 	if err != nil {
-		fmt.Println(err)
 		return false
 	}
 

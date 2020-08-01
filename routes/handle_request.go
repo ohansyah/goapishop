@@ -2,8 +2,8 @@ package routes
 
 import (
 	// "api_olshop/internal/contact"
+	"api_olshop/internal/user"
 	"api_olshop/middleware"
-	"api_olshop/pkg/register"
 	"api_olshop/pkg/token"
 	"fmt"
 	"log"
@@ -23,12 +23,13 @@ func HandleRequest() {
 	r.HandleFunc("/api/token/validate", token.Validate).Methods("POST")
 	r.HandleFunc("/api/token/refresh", token.Refresh).Methods("POST")
 
-	// contact
-	// r.HandleFunc("/api/contact/create", contact.Create).Methods("POST")
-
 	// register
-	r.HandleFunc("/api/roles", register.GetRoles).Methods("GET")
-	r.HandleFunc("/api/register", register.Register).Methods("POST")
+	r.HandleFunc("/api/roles", user.GetRoles).Methods("GET")
+	r.HandleFunc("/api/register", user.Register).Methods("POST")
+
+	// user
+	r.HandleFunc("/api/user/login", user.Login).Methods("POST")
+	r.HandleFunc("/api/user/logout", user.Logout).Methods("POST")
 
 	http.Handle("/", r)
 	fmt.Println("Connected to port " + viper.Get("port").(string))

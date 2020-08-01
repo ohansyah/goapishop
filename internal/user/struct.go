@@ -1,4 +1,4 @@
-package register
+package user
 
 // FormRegis as form data register
 type FormRegis struct {
@@ -8,5 +8,12 @@ type FormRegis struct {
 	Phone    string `json:"phone" validate:"required"`
 	Email    string `json:"email" validate:"required,email"`
 	Status   string `json:"status"`
-	Password string `json:"password"`
+	Password string `json:"password" validate:"required"`
+}
+
+// FormLogin as form data register
+type FormLogin struct {
+	Phone    string `json:"phone" validate:"required"`
+	Email    string `json:"email" validate:"required"`
+	Password string `json:"password" validate:"required"`
 }
