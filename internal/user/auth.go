@@ -72,3 +72,27 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	response.Data = user
 	res.ResSuccess(w, r, response)
 }
+
+// Logout user
+func Logout(w http.ResponseWriter, r *http.Request) {
+	var response res.Response
+
+	// validate token
+	var tokenString = strings.Join(r.Header["Token"], ", ")
+	var tokenData = queries.GetTokenData(tokenString)
+	if tokenData.ID == 0 {
+		response.Message = "Data invalid, pleace contact customer services"
+		res.ResErr(w, r, response, http.StatusBadRequest)
+		return
+	}
+
+	// validate token profiles
+	var tokenProfiles = queries.GetTokenProfile(tokenData.ID)
+	if tokenProfiles.ID != 0 {
+		queries.UpdateTokenProfile(tokenProfiles.ID, tokenData.ID, 0)
+	}
+
+	response.Message = "Logged out"
+	response.Success = true
+	res.ResSuccess(w, r, response)
+}

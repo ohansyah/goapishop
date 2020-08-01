@@ -29,6 +29,7 @@ func HandleRequest() {
 
 	// user
 	r.HandleFunc("/api/user/login", user.Login).Methods("POST")
+	r.HandleFunc("/api/user/logout", user.Logout).Methods("POST")
 
 	http.Handle("/", r)
 	fmt.Println("Connected to port " + viper.Get("port").(string))
